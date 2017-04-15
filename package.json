@@ -1,0 +1,29 @@
+{
+  "name": "tupper",
+  "version": "1.0.0",
+  "description": "web app to determine value for Tupper's Self-Referential Formula",
+  "main": "index.js",
+  "scripts": {
+    "start": "budo src/index.js --live --open --pushstate --dir public -- -t browserify-css",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JRJurman/tupper.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JRJurman/tupper/issues"
+  },
+  "homepage": "https://github.com/JRJurman/tupper#readme",
+  "dependencies": {
+    "choo": "^5.1.4",
+    "tachyons": "^4.7.0"
+  },
+  "devDependencies": {
+    "browserify-css": "^0.10.0",
+    "budo": "^9.4.7"
+  }
+}
