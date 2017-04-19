@@ -3,30 +3,38 @@ const html = require('choo/html')
 const space = require('../elements/space');
 const ratio = require('../elements/ratio');
 
-module.exports = () => {
+const board = require('../emit/board');
+
+const onClickSpace = (state, emit, key) => {
+  if (state.board.highlights[key]) {
+    return () => emit(board.move, key);
+  }
+  else if (state.board.pieces[key]) {
+    return () => emit(board.select, key);
+  }
+  else {
+    return () => emit(board.de_select);
+  }
+}
+
+module.exports = (state, emit) => {
   gridStyle = `
     display: grid;
     height: 100%;
     grid: repeat(4, 1fr) 0.5fr repeat(4, 1fr) / repeat(4, 1fr);
   `
 
-  mockBoard = {
-    a8: 'Q', b8: 'Q', c8: 'D',
-    a7: 'Q', b7: 'D', c7: 'P',
-    a6: 'D', b6: 'P', c6: 'P',
-
-    b3: 'P', c3: 'P', d3: 'D',
-    b2: 'P', c2: 'D', d2: 'Q',
-    b1: 'D', c1: 'Q', d1: 'Q',
-  }
-
-
-
   const board1 = '.'.repeat(3).split('.').map( (_, invNum) => {
     return 'abcd'.split('').map( letterNotation => {
       const numberNotation = 8-invNum;
       const key = `${letterNotation}${numberNotation}`;
-      return space(key, mockBoard[key])
+      return space(
+        key,
+        state.board.pieces[key],
+        state.board.highlights[key],
+        state.board.selected == key,
+        onClickSpace(state, emit, key)
+      );
     });
   });
 
@@ -36,7 +44,13 @@ module.exports = () => {
     return 'abcd'.split('').map( letterNotation => {
       const numberNotation = 4-invNum;
       const key = `${letterNotation}${numberNotation}`;
-      return space(key, mockBoard[key])
+      return space(
+        key,
+        state.board.pieces[key],
+        state.board.highlights[key],
+        state.board.selected == key,
+        onClickSpace(state, emit, key)
+      );
     });
   });
 
