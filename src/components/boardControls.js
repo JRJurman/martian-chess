@@ -13,19 +13,23 @@ module.exports = (state, emit) => {
     margin: 0px;
   `
 
+  const buttonClass = `
+    dim pointer
+  `
+
   const onNewGame = () => emit(boardTape.newGame);
   const onUndo = () => emit(boardTape.undo);
   const onRedo = () => emit(boardTape.redo);
 
   return html`
     <div style=${gridStyle}>
-      <h4 style=${buttonStyle} onclick=${onNewGame}>
+      <h4 style=${buttonStyle} onclick=${onNewGame} class=${buttonClass}>
         New Game
       </h4>
-      <h4 style=${buttonStyle} onclick=${onUndo}=>
+      <h4 style=${buttonStyle} onclick=${onUndo} class=${buttonClass}>
         Undo
       </h4>
-      <h4 style=${buttonStyle} onclick=${onRedo}>
+      <h4 style=${buttonStyle} onclick=${onRedo} class=${buttonClass}>
         Redo
       </h4>
     </div>

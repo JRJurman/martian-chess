@@ -48,6 +48,10 @@ module.exports = {
   de_select: DE_SELECT,
   move: MOVE,
 
+  pawn: PAWN,
+  drone: DRONE,
+  queen: QUEEN,
+
   listen: (state, emitter) => {
     // default state
     const defaultBoard = {

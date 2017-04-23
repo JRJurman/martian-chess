@@ -1,4 +1,5 @@
 const html = require('choo/html')
+const board = require('../emit/board');
 
 module.exports = (key, piece, highlight, selected, onClick) => {
   // determine the background color based on the chess notation
@@ -23,10 +24,55 @@ module.exports = (key, piece, highlight, selected, onClick) => {
     opacity: 0.75;
   `
 
+  const pyramid = ( ()=> {
+    switch(piece) {
+      case board.pawn:
+        return html`
+          <g>
+            <polygon
+              points="37.5,87.5 50,62.5, 62.5,87.5"
+              style="fill:#FFE700;stroke:black;stroke-width:1"
+            />
+            <circle cx="52.5" cy="82" r="3"/>
+          </g>
+        `
+      case board.drone:
+        return html`
+          <g>
+            <polygon
+              points="25,87.5 50,37.5, 75,87.5"
+              style="fill:#FFD700;stroke:black;stroke-width:1"
+            />
+            <circle cx="60" cy="82" r="3"/>
+            <circle cx="52.5" cy="82" r="3"/>
+          </g>
+        `
+      case board.queen:
+        return html`
+          <g>
+            <polygon
+              points="12.5,87.5 50,12.5, 87.5,87.5"
+              style="fill:#FFB700;stroke:black;stroke-width:1"
+            />
+            <circle cx="75" cy="82" r="3"/>
+            <circle cx="67.5" cy="82" r="3"/>
+            <circle cx="60" cy="82" r="3"/>
+          </g>
+        `
+      default:
+        return '';
+    }
+  })();
+
+  const spaceHover = (piece || highlight || selected) ? 'pointer' : '';
+
   return html`
-    <div style=${spaceStyle} onclick=${onClick} class=${bgColor}>
+    <div  style=${spaceStyle} class='${bgColor} ${spaceHover}'
+          onclick=${onClick} >
       <div style=${auxStyle} class=${auxColor}>
-        ${piece}
+        <svg height="100%" width="100%" viewBox="0 0 100 100">
+          ${pyramid}
+        </svg>
       </div>
     </div>
   `
