@@ -1,12 +1,11 @@
 // this element will keep a component at a specific ratio
 // http://stackoverflow.com/questions/6148012/setting-element-width-based-on-height-via-css
 
-var html = require('choo/html')
+const html = require('choo/html')
 
-const gif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+const gif = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
 module.exports = (ratio, element) => {
-
   const containerStyle = `
     position: relative;
     display: inline-block;

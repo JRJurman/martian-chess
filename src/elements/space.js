@@ -1,18 +1,15 @@
-var html = require('choo/html')
-
-const ratio = require('./ratio');
+const html = require('choo/html')
 
 module.exports = (key, piece, highlight, selected, onClick) => {
-
   // determine the background color based on the chess notation
-  const keyValue = key.charCodeAt(0)+parseInt(key[1]);
+  const keyValue = key.charCodeAt(0) + parseInt(key[1], 10);
   const bgColor = keyValue % 2 ? 'bg-red' : 'bg-orange';
 
   // if we are selecting or highlighting the space
-  const auxColor = (() => {
+  const auxColor = ( () => {
     if (highlight) { return 'bg-gold'; }
     else if (selected) { return 'bg-light-red'; }
-    else { return '' }
+    else { return ''; }
   })();
 
   const spaceStyle = `

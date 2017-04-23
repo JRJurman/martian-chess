@@ -1,6 +1,6 @@
-var html = require('choo/html')
+const html = require('choo/html')
 
-const store = require('../emit/store');
+const boardTape = require('../emit/boardTape');
 
 module.exports = (state, emit) => {
   const gridStyle = `
@@ -13,9 +13,9 @@ module.exports = (state, emit) => {
     margin: 0px;
   `
 
-  const onNewGame = () => emit(store.newGame);
-  const onUndo = () => emit(store.undo);
-  const onRedo = () => emit(store.redo);
+  const onNewGame = () => emit(boardTape.newGame);
+  const onUndo = () => emit(boardTape.undo);
+  const onRedo = () => emit(boardTape.redo);
 
   return html`
     <div style=${gridStyle}>

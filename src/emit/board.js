@@ -1,10 +1,12 @@
-const SELECT =    'BOARD:SELECT';
-const DE_SELECT = 'BOARD:DE_SELECT';
-const MOVE =      'BOARD:MOVE';
+/* eslint-disable space-infix-ops, no-multi-spaces */
 
-const PAWN =      'PAWN';
-const DRONE =     'DRONE';
-const QUEEN =     'QUEEN';
+const SELECT = 'BOARD:SELECT';
+const DE_SELECT = 'BOARD:DE_SELECT';
+const MOVE = 'BOARD:MOVE';
+
+const PAWN = 'PAWN';
+const DRONE = 'DRONE';
+const QUEEN = 'QUEEN';
 
 const UPDATE_TAPE = require('./boardTape').update;
 
@@ -12,7 +14,7 @@ const UPDATE_TAPE = require('./boardTape').update;
 const buildMoves = (state, key) => (pathLists) => {
   return pathLists
   /* stop sequential paths early if we run into pieces */
-  .map((coordList) => {
+  .map( (coordList) => {
     // generate the first position we run into a piece (we can't jump over them)
     const stopIndex = coordList.reduce( (stopVar, coord, index) => {
       if (stopVar) { return stopVar; }
@@ -25,18 +27,18 @@ const buildMoves = (state, key) => (pathLists) => {
   })
 
   /* join paths together to have one list of possible moves */
-  .reduce((paths, path) => paths.concat(path), [])
+  .reduce( (paths, path) => paths.concat(path), [])
 
   /* return object of valid moves to highlight */
-  .reduce((highlights, coord) => {
+  .reduce( (highlights, coord) => {
     // translate numbers to chess notation
     const checkKey = [String.fromCharCode(coord[0]), coord[1]].join('');
 
     // if we hit a piece, it needs to be on the other board
-    const diffSpace = Math.floor(parseInt(key[1])/5) ^ Math.floor(coord[1]/5);
+    const diffSpace = Math.floor(parseInt(key[1], 10)/5) ^ Math.floor(coord[1]/5);
     return Object.assign(
       {}, highlights,
-      {[checkKey]: diffSpace || !state.board.pieces[checkKey]}
+      { [checkKey]: diffSpace || !state.board.pieces[checkKey] }
     );
   }, {});
 }
@@ -56,7 +58,7 @@ module.exports = {
 
         b3: PAWN,   c3: PAWN,   d3: DRONE,
         b2: PAWN,   c2: DRONE,  d2: QUEEN,
-        b1: DRONE,  c1: QUEEN,  d1: QUEEN,
+        b1: DRONE,  c1: QUEEN,  d1: QUEEN
       },
       highlights: {},
       selected: ''
@@ -65,14 +67,13 @@ module.exports = {
 
     // highlight the board with the moves available
     emitter.on(SELECT, (key) => {
-
       // convert chess notation to decimal
       const row = key[0].charCodeAt(0);
-      const col = parseInt(key[1]);
+      const col = parseInt(key[1], 10);
 
       const buildKeyMoves = buildMoves(state, key);
 
-      const newHighlights = (() => {
+      const newHighlights = ( () => {
         switch (state.board.pieces[key]) {
           case PAWN:
             return buildKeyMoves([
@@ -97,12 +98,14 @@ module.exports = {
               [[row+1, col+1], [row+2, col+2], [row+3, col+3], [row+4, col+4]],
               [[row-1, col+1], [row-2, col+2], [row-3, col+3], [row-4, col+4]],
               [[row-1, col], [row-2, col], [row-3, col], [row-4, col]],
-              [[row+1, col], [row+2, col], [row+3, col], [row+4, col]],
+              [[row+1, col], [row+2, col], [row+3, col], [row+4, col]]
             ]);
+          default:
+            return [];
         }
       })();
       const newBoard = Object.assign(
-        {}, state.board, {highlights: newHighlights}, {selected: key}
+        {}, state.board, { highlights: newHighlights, selected: key }
       );
       emitter.emit(UPDATE_TAPE, newBoard)
     });
@@ -111,7 +114,7 @@ module.exports = {
     emitter.on(DE_SELECT, () => {
       const newBoard = Object.assign(
         {}, state.board,
-        {highlights:{}, selected:''}
+        { highlights: {}, selected: '' }
       );
       emitter.emit(UPDATE_TAPE, newBoard);
     });
@@ -125,8 +128,8 @@ module.exports = {
 
       const newBoard = Object.assign(
         {}, state.board,
-        {pieces: newPieces},
-        {highlights:{}, selected:''}
+        { pieces: newPieces },
+        { highlights: {}, selected: '' }
       );
 
       emitter.emit(UPDATE_TAPE, newBoard);

@@ -26,30 +26,30 @@ module.exports = (state, emit) => {
   `
 
   const board1 = '.'.repeat(3).split('.').map( (_, invNum) => {
-    return 'abcd'.split('').map( letterNotation => {
-      const numberNotation = 8-invNum;
+    return 'abcd'.split('').map( (letterNotation) => {
+      const numberNotation = 8 - invNum;
       const key = `${letterNotation}${numberNotation}`;
       return space(
         key,
         state.board.pieces[key],
         state.board.highlights[key],
-        state.board.selected == key,
+        state.board.selected === key,
         onClickSpace(state, emit, key)
       );
     });
   });
 
-  const padding = '.'.repeat(3).split('.').map( () => html`<div>` );
+  const padding = '.'.repeat(3).split('.').map( () => html`<div>`);
 
   const board2 = '.'.repeat(3).split('.').map( (_, invNum) => {
-    return 'abcd'.split('').map( letterNotation => {
-      const numberNotation = 4-invNum;
+    return 'abcd'.split('').map( (letterNotation) => {
+      const numberNotation = 4 - invNum;
       const key = `${letterNotation}${numberNotation}`;
       return space(
         key,
         state.board.pieces[key],
         state.board.highlights[key],
-        state.board.selected == key,
+        state.board.selected === key,
         onClickSpace(state, emit, key)
       );
     });

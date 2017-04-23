@@ -1,4 +1,3 @@
-const html = require('choo/html')
 const choo = require('choo')
 
 const mainPage = require('./pages/main');

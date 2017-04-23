@@ -1,0 +1,21 @@
+extends: airbnb-base
+plugins:
+  - import
+rules:
+  semi: off
+  comma-dangle:
+    - error
+    - never
+  no-bitwise: off
+  object-property-newline: off
+  space-in-parens:
+    - error
+    - never
+    - exceptions:
+      - ()
+  arrow-body-style: off
+  brace-style:
+    - error
+    - stroustrup
+    - allowSingleLine: true
+  no-else-return: off
