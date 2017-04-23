@@ -6,25 +6,22 @@ const PAWN =      'PAWN';
 const DRONE =     'DRONE';
 const QUEEN =     'QUEEN';
 
+const UPDATE_TAPE = require('./boardTape').update;
+
 /* generate highlights object based on paths */
 const buildMoves = (state, key) => (pathLists) => {
   return pathLists
   /* stop sequential paths early if we run into pieces */
   .map((coordList) => {
-    // create a list of booleans on if there is a piece
-    //  at a coord we want to go to
-    const boolList = coordList.map(coord => {
+    // generate the first position we run into a piece (we can't jump over them)
+    const stopIndex = coordList.reduce( (stopVar, coord, index) => {
+      if (stopVar) { return stopVar; }
+
       const checkKey = [String.fromCharCode(coord[0]), coord[1]].join('');
-      return !state.board.pieces[checkKey];
-    });
+      return (state.board.pieces[checkKey]) ? index+1 : stopVar;
+    }, undefined);
 
-    // determine the first piece that we could land on
-    const stop = boolList.indexOf(false);
-
-    // if there is a stop, we'll go +1 past it
-    // (we want to include capturable pieces)
-    // otherwise, return all the coords
-    return coordList.slice(0, stop!=-1 ? stop+1 : undefined);
+    return coordList.slice(0, stopIndex);
   })
 
   /* join paths together to have one list of possible moves */
@@ -49,9 +46,9 @@ module.exports = {
   de_select: DE_SELECT,
   move: MOVE,
 
-  store: (state, emitter) => {
+  listen: (state, emitter) => {
     // default state
-    state.board = {
+    const defaultBoard = {
       pieces: {
         a8: QUEEN,  b8: QUEEN,  c8: DRONE,
         a7: QUEEN,  b7: DRONE,  c7: PAWN,
@@ -64,8 +61,10 @@ module.exports = {
       highlights: {},
       selected: ''
     }
+    emitter.emit(UPDATE_TAPE, defaultBoard);
+
+    // highlight the board with the moves available
     emitter.on(SELECT, (key) => {
-      // highlight the board with the moves available
 
       // convert chess notation to decimal
       const row = key[0].charCodeAt(0);
@@ -102,25 +101,35 @@ module.exports = {
             ]);
         }
       })();
-      state.board.highlights = newHighlights;
-      state.board.selected = key;
-      emitter.emit('render')
+      const newBoard = Object.assign(
+        {}, state.board, {highlights: newHighlights}, {selected: key}
+      );
+      emitter.emit(UPDATE_TAPE, newBoard)
     });
+
+    // clear the selection on the board
     emitter.on(DE_SELECT, () => {
-      state.board = Object.assign(
+      const newBoard = Object.assign(
         {}, state.board,
         {highlights:{}, selected:''}
       );
-      emitter.emit('render');
+      emitter.emit(UPDATE_TAPE, newBoard);
     });
+
+    // move pieces on the board
     emitter.on(MOVE, (key) => {
-      // move pieces on the board
-      state.board.pieces[key] = state.board.pieces[state.board.selected];
-      // remove the piece on the old space
-      delete state.board.pieces[state.board.selected];
-      // remove highlights
-      emitter.emit(DE_SELECT);
-      emitter.emit('render');
+      const newPieces = Object.assign({}, state.board.pieces, {
+        [key]: state.board.pieces[state.board.selected],
+        [state.board.selected]: undefined
+      });
+
+      const newBoard = Object.assign(
+        {}, state.board,
+        {pieces: newPieces},
+        {highlights:{}, selected:''}
+      );
+
+      emitter.emit(UPDATE_TAPE, newBoard);
     });
   }
 }

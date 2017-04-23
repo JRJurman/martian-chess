@@ -1,5 +1,6 @@
 const html = require('choo/html')
 
+const boardControls = require('./boardControls');
 const space = require('../elements/space');
 const ratio = require('../elements/ratio');
 
@@ -18,7 +19,7 @@ const onClickSpace = (state, emit, key) => {
 }
 
 module.exports = (state, emit) => {
-  gridStyle = `
+  const gridStyle = `
     display: grid;
     height: 100%;
     grid: repeat(4, 1fr) 0.5fr repeat(4, 1fr) / repeat(4, 1fr);
@@ -55,10 +56,13 @@ module.exports = (state, emit) => {
   });
 
   return ratio('47.06%', html`
-    <div style=${gridStyle}>
-      ${board1}
-      ${padding}
-      ${board2}
+    <div>
+      ${boardControls(state, emit)}
+      <div style=${gridStyle}>
+        ${board1}
+        ${padding}
+        ${board2}
+      </div>
     </div>
   `);
 }
