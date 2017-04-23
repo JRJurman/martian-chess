@@ -9,7 +9,7 @@ module.exports = (state, emit) => {
   const boardStyle = 'height: 87%;';
 
   return html`
-    <body class="bg-light-red black-60 pa4">
+    <body class="bg-light-red black-60 pa3">
       ${title()}
       <div style=${boardStyle}>
         ${board(state, emit)}
