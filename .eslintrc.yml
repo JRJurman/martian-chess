@@ -6,7 +6,6 @@ rules:
   comma-dangle:
     - error
     - never
-  no-bitwise: off
   object-property-newline: off
   space-in-parens:
     - error

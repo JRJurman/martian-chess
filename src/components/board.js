@@ -4,21 +4,27 @@ const boardControls = require('./boardControls');
 const space = require('../elements/space');
 const ratio = require('../elements/ratio');
 
+const INIT = require('../emit/mutable').init;
 const board = require('../emit/board');
 
 const onClickSpace = (state, emit, key) => {
   if (state.board.highlights[key]) {
-    return () => emit(board.move, key);
+    return () => emit(board.move, { state, key });
   }
   else if (state.board.pieces[key]) {
-    return () => emit(board.select, key);
+    return () => emit(board.select, { state, key });
   }
   else {
-    return () => emit(board.de_select);
+    return () => emit(board.de_select, { state });
   }
 }
 
 module.exports = (state, emit) => {
+  if (!state.board) {
+    emit(INIT);
+    return '';
+  }
+
   const gridStyle = `
     display: grid;
     height: 100%;

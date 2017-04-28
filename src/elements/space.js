@@ -24,39 +24,31 @@ module.exports = (key, piece, highlight, selected, onClick) => {
     opacity: 0.75;
   `
 
-  const pyramid = ( ()=> {
-    switch(piece) {
+  const pyramid = ( () => {
+    const svgStyle = color => `fill:${color};stroke:black;stroke-width:1`;
+    switch (piece) {
       case board.pawn:
         return html`
           <g>
-            <polygon
-              points="37.5,87.5 50,62.5, 62.5,87.5"
-              style="fill:#FFE700;stroke:black;stroke-width:1"
-            />
-            <circle cx="52.5" cy="82" r="3"/>
+            <polygon points="37.5,87.5 50,62.5, 62.5,87.5" style=${svgStyle`#FFE700`} />
+            <circle cx="52.5" cy="82" r="3" style=${svgStyle`#FFE700`} />
           </g>
         `
       case board.drone:
         return html`
           <g>
-            <polygon
-              points="25,87.5 50,37.5, 75,87.5"
-              style="fill:#FFD700;stroke:black;stroke-width:1"
-            />
-            <circle cx="60" cy="82" r="3"/>
-            <circle cx="52.5" cy="82" r="3"/>
+            <polygon points="25,87.5 50,37.5, 75,87.5" style=${svgStyle`#FFD700`} />
+            <circle cx="60" cy="82" r="3" style=${svgStyle`#FFD700`} />
+            <circle cx="52.5" cy="82" r="3" style=${svgStyle`#FFD700`} />
           </g>
         `
       case board.queen:
         return html`
           <g>
-            <polygon
-              points="12.5,87.5 50,12.5, 87.5,87.5"
-              style="fill:#FFB700;stroke:black;stroke-width:1"
-            />
-            <circle cx="75" cy="82" r="3"/>
-            <circle cx="67.5" cy="82" r="3"/>
-            <circle cx="60" cy="82" r="3"/>
+            <polygon points="12.5,87.5 50,12.5, 87.5,87.5" style=${svgStyle`#FFB700`} />
+            <circle cx="75" cy="82" r="3" style=${svgStyle`#FFB700`} />
+            <circle cx="67.5" cy="82" r="3" style=${svgStyle`#FFB700`} />
+            <circle cx="60" cy="82" r="3" style=${svgStyle`#FFB700`} />
           </g>
         `
       default:

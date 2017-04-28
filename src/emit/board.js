@@ -8,6 +8,7 @@ const PAWN = 'PAWN';
 const DRONE = 'DRONE';
 const QUEEN = 'QUEEN';
 
+const INIT = require('./mutable').init;
 const UPDATE_TAPE = require('./boardTape').update;
 
 /* generate highlights object based on paths */
@@ -35,12 +36,26 @@ const buildMoves = (state, key) => (pathLists) => {
     const checkKey = [String.fromCharCode(coord[0]), coord[1]].join('');
 
     // if we hit a piece, it needs to be on the other board
-    const diffSpace = Math.floor(parseInt(key[1], 10)/5) ^ Math.floor(coord[1]/5);
+    const diffSpace = Math.floor(parseInt(key[1], 10)/5) !== Math.floor(coord[1]/5);
     return Object.assign(
       {}, highlights,
       { [checkKey]: diffSpace || !state.board.pieces[checkKey] }
     );
   }, {});
+}
+
+const defaultBoard = {
+  pieces: {
+    a8: QUEEN,  b8: QUEEN,  c8: DRONE,
+    a7: QUEEN,  b7: DRONE,  c7: PAWN,
+    a6: DRONE,  b6: PAWN,   c6: PAWN,
+
+    b3: PAWN,   c3: PAWN,   d3: DRONE,
+    b2: PAWN,   c2: DRONE,  d2: QUEEN,
+    b1: DRONE,  c1: QUEEN,  d1: QUEEN
+  },
+  highlights: {},
+  selected: ''
 }
 
 module.exports = {
@@ -52,25 +67,13 @@ module.exports = {
   drone: DRONE,
   queen: QUEEN,
 
-  listen: (state, emitter) => {
-    // default state
-    const defaultBoard = {
-      pieces: {
-        a8: QUEEN,  b8: QUEEN,  c8: DRONE,
-        a7: QUEEN,  b7: DRONE,  c7: PAWN,
-        a6: DRONE,  b6: PAWN,   c6: PAWN,
-
-        b3: PAWN,   c3: PAWN,   d3: DRONE,
-        b2: PAWN,   c2: DRONE,  d2: QUEEN,
-        b1: DRONE,  c1: QUEEN,  d1: QUEEN
-      },
-      highlights: {},
-      selected: ''
-    }
-    emitter.emit(UPDATE_TAPE, defaultBoard);
+  listen: (_, emitter) => {
+    emitter.on(INIT, () => {
+      emitter.emit(UPDATE_TAPE, { state: {}, newBoard: defaultBoard });
+    });
 
     // highlight the board with the moves available
-    emitter.on(SELECT, (key) => {
+    emitter.on(SELECT, ({ state, key }) => {
       // convert chess notation to decimal
       const row = key[0].charCodeAt(0);
       const col = parseInt(key[1], 10);
@@ -111,20 +114,20 @@ module.exports = {
       const newBoard = Object.assign(
         {}, state.board, { highlights: newHighlights, selected: key }
       );
-      emitter.emit(UPDATE_TAPE, newBoard)
+      emitter.emit(UPDATE_TAPE, { state, newBoard })
     });
 
     // clear the selection on the board
-    emitter.on(DE_SELECT, () => {
+    emitter.on(DE_SELECT, ({ state }) => {
       const newBoard = Object.assign(
         {}, state.board,
         { highlights: {}, selected: '' }
       );
-      emitter.emit(UPDATE_TAPE, newBoard);
+      emitter.emit(UPDATE_TAPE, { state, newBoard });
     });
 
     // move pieces on the board
-    emitter.on(MOVE, (key) => {
+    emitter.on(MOVE, ({ state, key }) => {
       const newPieces = Object.assign({}, state.board.pieces, {
         [key]: state.board.pieces[state.board.selected],
         [state.board.selected]: undefined
@@ -136,7 +139,7 @@ module.exports = {
         { highlights: {}, selected: '' }
       );
 
-      emitter.emit(UPDATE_TAPE, newBoard);
+      emitter.emit(UPDATE_TAPE, { state, newBoard });
     });
   }
 }
