@@ -4,7 +4,7 @@ const boardControls = require('./boardControls');
 const space = require('../elements/space');
 const ratio = require('../elements/ratio');
 
-const INIT = require('../emit/mutable').init;
+const score = require('../emit/score');
 const board = require('../emit/board');
 
 const onClickSpace = (state, emit, key) => {
@@ -21,8 +21,11 @@ const onClickSpace = (state, emit, key) => {
 
 module.exports = (state, emit) => {
   if (!state.board) {
-    emit(INIT);
-    return '';
+    emit(board.init_board, state);
+  }
+
+  if (!state.score || !state.score.p1) {
+    emit(score.init_score, state);
   }
 
   const gridStyle = `

@@ -1,5 +1,6 @@
 /* eslint-disable space-infix-ops, no-multi-spaces */
 
+const INIT_BOARD = 'BOARD:INIT_BOARD';
 const SELECT = 'BOARD:SELECT';
 const DE_SELECT = 'BOARD:DE_SELECT';
 const MOVE = 'BOARD:MOVE';
@@ -8,8 +9,7 @@ const PAWN = 'PAWN';
 const DRONE = 'DRONE';
 const QUEEN = 'QUEEN';
 
-const INIT = require('./mutable').init;
-const UPDATE_TAPE = require('./boardTape').update;
+const UPDATE_TAPE = require('./historyTape').update;
 
 /* generate highlights object based on paths */
 const buildMoves = (state, key) => (pathLists) => {
@@ -59,6 +59,7 @@ const defaultBoard = {
 }
 
 module.exports = {
+  init_board: INIT_BOARD,
   select: SELECT,
   de_select: DE_SELECT,
   move: MOVE,
@@ -68,8 +69,8 @@ module.exports = {
   queen: QUEEN,
 
   listen: (_, emitter) => {
-    emitter.on(INIT, () => {
-      emitter.emit(UPDATE_TAPE, { state: {}, newBoard: defaultBoard });
+    emitter.on(INIT_BOARD, (state) => {
+      emitter.emit(UPDATE_TAPE, { state, newBoard: defaultBoard });
     });
 
     // highlight the board with the moves available

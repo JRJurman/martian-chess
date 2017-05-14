@@ -1,6 +1,6 @@
 const html = require('choo/html')
 
-const boardTape = require('../emit/boardTape');
+const historyTape = require('../emit/historyTape');
 
 module.exports = (state, emit) => {
   const gridStyle = `
@@ -17,9 +17,9 @@ module.exports = (state, emit) => {
     dim pointer
   `
 
-  const onNewGame = () => emit(boardTape.newGame, { state });
-  const onUndo = () => emit(boardTape.undo, { state });
-  const onRedo = () => emit(boardTape.redo, { state });
+  const onNewGame = () => emit(historyTape.newGame, { state });
+  const onUndo = () => emit(historyTape.undo, { state });
+  const onRedo = () => emit(historyTape.redo, { state });
 
   return html`
     <div style=${gridStyle}>
