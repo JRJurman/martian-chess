@@ -17,9 +17,9 @@ module.exports = (state, emit) => {
     dim pointer
   `
 
-  const onNewGame = () => emit(historyTape.newGame, { state });
-  const onUndo = () => emit(historyTape.undo, { state });
-  const onRedo = () => emit(historyTape.redo, { state });
+  const onNewGame = () => emit(historyTape.newGame, { state, socket: true });
+  const onUndo = () => emit(historyTape.undo, { state, socket: true });
+  const onRedo = () => emit(historyTape.redo, { state, socket: true });
 
   return html`
     <div style=${gridStyle}>

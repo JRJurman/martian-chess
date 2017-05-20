@@ -1,4 +1,6 @@
 extends: airbnb-base
+globals:
+  WebSocket: true
 plugins:
   - import
 rules:
@@ -8,11 +10,7 @@ rules:
     - error
     - never
   object-property-newline: off
-  space-in-parens:
-    - error
-    - never
-    - exceptions:
-      - ()
+  space-in-parens: off
   arrow-body-style: off
   brace-style:
     - error

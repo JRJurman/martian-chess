@@ -4,30 +4,27 @@ const boardControls = require('./boardControls');
 const space = require('../elements/space');
 const ratio = require('../elements/ratio');
 
-const score = require('../emit/score');
 const board = require('../emit/board');
 
 const onClickSpace = (state, emit, key) => {
   if (state.board.highlights[key]) {
-    return () => emit(board.move, { state, key });
+    return () => {
+      emit(board.move, { state, key, socket: true });
+    };
   }
   else if (state.board.pieces[key]) {
-    return () => emit(board.select, { state, key });
+    return () => {
+      emit(board.select, { state, key, socket: true });
+    };
   }
   else {
-    return () => emit(board.de_select, { state });
+    return () => {
+      emit(board.deSelect, { state, socket: true });
+    };
   }
 }
 
 module.exports = (state, emit) => {
-  if (!state.board) {
-    emit(board.init_board, state);
-  }
-
-  if (!state.score || !state.score.p1) {
-    emit(score.init_score, state);
-  }
-
   const gridStyle = `
     display: grid;
     height: 100%;
@@ -66,6 +63,7 @@ module.exports = (state, emit) => {
 
   return ratio('47.06%', html`
     <div>
+      ${JSON.stringify(state.score)}
       ${boardControls(state, emit)}
       <div style=${gridStyle}>
         ${board1}

@@ -4,7 +4,8 @@
   "description": "web app to determine value for Tupper's Self-Referential Formula",
   "main": "index.js",
   "scripts": {
-    "start": "budo src/index.js --live --open --pushstate --dir public -- -t browserify-css",
+    "start:server": "node server/socketserver.js",
+    "start:client": "budo src/index.js --live --open --pushstate --dir public -- -t browserify-css",
     "lint": "eslint src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,7 +21,9 @@
   },
   "homepage": "https://github.com/JRJurman/tupper#readme",
   "dependencies": {
-    "choo": "^5.1.4"
+    "choo": "^5.4.0",
+    "express": "^4.15.2",
+    "express-ws": "^3.0.0"
   },
   "devDependencies": {
     "browserify-css": "^0.10.0",

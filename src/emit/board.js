@@ -1,6 +1,5 @@
 /* eslint-disable space-infix-ops, no-multi-spaces */
 
-const INIT_BOARD = 'BOARD:INIT_BOARD';
 const SELECT = 'BOARD:SELECT';
 const DE_SELECT = 'BOARD:DE_SELECT';
 const MOVE = 'BOARD:MOVE';
@@ -59,22 +58,22 @@ const defaultBoard = {
 }
 
 module.exports = {
-  init_board: INIT_BOARD,
   select: SELECT,
-  de_select: DE_SELECT,
+  deSelect: DE_SELECT,
   move: MOVE,
 
   pawn: PAWN,
   drone: DRONE,
   queen: QUEEN,
 
-  listen: (_, emitter) => {
-    emitter.on(INIT_BOARD, (state) => {
-      emitter.emit(UPDATE_TAPE, { state, newBoard: defaultBoard });
-    });
+  listen: (mutableState, emitter) => {
+    emitter.emit(UPDATE_TAPE, { state: mutableState, newBoard: defaultBoard });
 
     // highlight the board with the moves available
     emitter.on(SELECT, ({ state, key }) => {
+      // eslint-disable-next-line no-console
+      if (state.logger) { console.log('EVENT:', SELECT) }
+
       // convert chess notation to decimal
       const row = key[0].charCodeAt(0);
       const col = parseInt(key[1], 10);
@@ -120,6 +119,9 @@ module.exports = {
 
     // clear the selection on the board
     emitter.on(DE_SELECT, ({ state }) => {
+      // eslint-disable-next-line no-console
+      if (state.logger) { console.log('EVENT:', DE_SELECT) }
+
       const newBoard = Object.assign(
         {}, state.board,
         { highlights: {}, selected: '' }
@@ -129,6 +131,9 @@ module.exports = {
 
     // move pieces on the board
     emitter.on(MOVE, ({ state, key }) => {
+      // eslint-disable-next-line no-console
+      if (state.logger) { console.log('EVENT:', MOVE) }
+
       const newPieces = Object.assign({}, state.board.pieces, {
         [key]: state.board.pieces[state.board.selected],
         [state.board.selected]: undefined

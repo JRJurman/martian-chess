@@ -9,20 +9,22 @@ const defaultScore = {
 };
 
 module.exports = {
-  init_score: INIT_SCORE,
+  initScore: INIT_SCORE,
 
-  listen: (_, emitter) => {
-    emitter.on(INIT_SCORE, (state) => {
-      emitter.emit(UPDATE_TAPE, { state, newScore: defaultScore });
-    });
+  listen: (mutableState, emitter) => {
+    emitter.emit(UPDATE_TAPE, { state: mutableState, newScore: defaultScore });
 
     emitter.on(board.move, ({ state, key }) => {
+      // eslint-disable-next-line no-console
+      if (state.logger) { console.log('EVENT:', board.move) }
+
       if (state.board.pieces[key]) {
         const column = parseInt(key[1], 10);
         const player = `p${2 - Math.floor(column / 5)}`;
 
         const playerPieces = state.score[player].concat(state.board.pieces[key]);
         const scoreObject = Object.assign({}, state.score, { [player]: playerPieces });
+        console.log(scoreObject);
         emitter.emit(UPDATE_TAPE, { state, newScore: scoreObject });
       }
     });

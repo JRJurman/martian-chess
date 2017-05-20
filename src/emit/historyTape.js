@@ -13,17 +13,24 @@ module.exports = {
 
   listen: (_, emitter) => {
     emitter.on(NEW_GAME, ({ state }) => {
-      const oldBoard = state.boardTape[0];
-      const oldScore = state.scoreTape[0];
+      // eslint-disable-next-line no-console
+      if (state.logger) { console.log('EVENT:', NEW_GAME) }
+
+      const oldBoard = state.boardTape[1];
+      const oldScore = state.scoreTape[1];
       emitter.emit(mutable.mutate, {
         board: oldBoard,
         boardTape: [oldBoard],
         score: [oldScore],
-        cursor: 1
+        cursor: 2
       })
     });
 
+    /* should never be called directly, used by other emitters */
     emitter.on(UPDATE, ({ state, newBoard, newScore }) => {
+      // eslint-disable-next-line no-console
+      if (state.logger) { console.log('EVENT:', UPDATE) }
+
       const updateBoard = newBoard || state.board || {};
       const updateScore = newScore || state.score || {};
 
@@ -37,6 +44,9 @@ module.exports = {
     });
 
     emitter.on(UNDO, ({ state }) => {
+      // eslint-disable-next-line no-console
+      if (state.logger) { console.log('EVENT:', UNDO) }
+
       if (state.cursor <= 1) { return; }
       // we can replay history from the begining of the tape, to the cursor
       // we concat an empty object so we don't change the first element
@@ -50,6 +60,9 @@ module.exports = {
     });
 
     emitter.on(REDO, ({ state }) => {
+      // eslint-disable-next-line no-console
+      if (state.logger) { console.log('EVENT:', REDO) }
+
       if (!state.boardTape || (state.cursor > state.boardTape.length - 1) ) { return; }
       // we can replay history from the begining of the tape, to the cursor
       // we concat an empty object so we don't change the first element
